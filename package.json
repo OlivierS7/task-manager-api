@@ -1,0 +1,24 @@
+{
+  "name": "task-manager-api",
+  "version": "1.0.0",
+  "description": "An API to handle evry calls for my front application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OlivierS7/task-manager-api.git"
+  },
+  "keywords": [
+    "API",
+    "Task",
+    "manager"
+  ],
+  "author": "OlivierS7",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OlivierS7/task-manager-api/issues"
+  },
+  "homepage": "https://github.com/OlivierS7/task-manager-api#readme"
+}
