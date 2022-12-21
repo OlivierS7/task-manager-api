@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const {mongoose} = require('./db/mongoose')
 
@@ -6,6 +7,22 @@ const { List, Task } = require('./db/models')
 
 /* Load middleware */
 app.use(express.json())
+
+/* Cors Headers Middleware */
+const whitelist = ['http://localhost:3000', 'http://localhost:4200'];
+app.options('*', cors());
+const corsOptions = {
+  credentials: true,
+  origin: (origin, callback) => {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 
 /**
  * GET /lists
