@@ -57,7 +57,7 @@ UserSchema.methods.toJSON = function() {
     const userObject = user.toObject()
 
     // return a JSON representation of the user (excludes fields specified below)
-    return lodash.omit(userObject, ['firstname', 'lastname', 'password', 'sessions'])
+    return lodash.omit(userObject, ['firstName', 'lastName', 'password', 'sessions'])
 }
 
 UserSchema.methods.generateAccessAuthToken = function() {

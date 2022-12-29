@@ -22,6 +22,7 @@ const corsOptions = {
       callback(new Error('Not allowed by CORS'));
     }
   },
+  exposedHeaders: ['x-access-token', 'x-refresh-token']
 };
 
 app.use(cors(corsOptions));
