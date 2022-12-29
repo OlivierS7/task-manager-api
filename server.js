@@ -3,7 +3,7 @@ const cors = require('cors')
 const app = express()
 const {mongoose} = require('./db/mongoose')
 
-const { List, Task } = require('./db/models')
+const { List, Task, User } = require('./db/models')
 
 /* Load middleware */
 app.use(express.json())
@@ -135,6 +135,59 @@ app.delete('/lists/:id', (req, res) => {
         _listId: req.params.listId
     }).then((removedList) => {
         res.send(removedList)
+    })
+})
+
+/**
+ * POST /users
+ * Purpose: Signup
+ */
+app.post('/users', (req, res) => {
+    let body = req.body
+    let newUser = new User(body)
+    newUser.save().then(() => {
+        return newUser.createSession()
+    }).then((refreshToken) => {
+        // Session created successfully / Now generate an access auth token for the user
+        return newUser.generateAccessAuthToken().then((accessToken) => {
+            // Access token generated successfully / return an object containing the auth tokens
+            return {accessToken, refreshToken}
+        })
+    }).then((authTokens) => {
+        // Construct & send the response to the user with their auth tokens in the header and the user object in the body
+        res.header('x-refresh-token', authTokens.refreshToken)
+            .header('x-access-token', authTokens.accesstoken)
+            .send(newUser)
+    }).catch((error) => {
+        res.status(400).send(error)
+    })
+})
+
+/**
+ * POST /users/login
+ * Purpose: Login
+ */
+app.post('/users/login', (req, res) => {
+    let email = req.body.email
+    let password = req.body.password
+    
+    User.findByCredentials(email, password).then((user) => {
+        return user.createSession().then((refreshToken) => {
+             // Session created successfully / Now generate an access auth token for the user
+             return user.generateAccessAuthToken().then((accessToken) => {
+                // Access token generated successfully / return an object containing the auth tokens
+                return {accessToken, refreshToken}
+            })
+        }).then((authTokens) => {
+            // Construct & send the response to the user with their auth tokens in the header and the user object in the body
+            res.header('x-refresh-token', authTokens.refreshToken)
+                .header('x-access-token', authTokens.accessToken)
+                .send(user)
+        }).catch((error) => {
+            res.status(400).send(error)
+        })
+    }).catch((error) => {
+        res.status(400).send(error)
     })
 })
 
