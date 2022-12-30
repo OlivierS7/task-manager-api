@@ -101,6 +101,11 @@ UserSchema.methods.createSession = function() {
 /* End Instance methods */
 
 /* Model methods */
+
+UserSchema.statics.getJWTSecret = function() {
+    return jwtSecret
+}
+
 // Find user by id and token (used in middleware verifySession)
 UserSchema.statics.findByIdAndToken = function(_id, token) {
     const user = this
