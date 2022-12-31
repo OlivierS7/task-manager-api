@@ -232,13 +232,13 @@ app.delete('/lists/:id', authenticate, (req, res) => {
         return false
     }).then((canUpdateTask) => {
         if(canUpdateTask) {
-            Task.findByIdAndUpdate({
+            Task.findOneAndUpdate({
                 _id: req.params.taskId,
                 _listId: req.params.listId
             }, {
                 $set: req.body
             }).then(() => {
-                res.sendStatus(200)
+                res.send({ message: 'Updated successfully.' })
             })
         } else {
             res.sendStatus(404)
