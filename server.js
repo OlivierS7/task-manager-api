@@ -114,7 +114,7 @@ app.patch('/lists/:id', authenticate, (req, res) => {
     List.findByIdAndUpdate({_id: req.params.id, _userId: req.user_id}, {
         $set: req.body
     }).then(() => {
-        res.sendStatus(200)
+        res.send({'message': 'Updated successfully'})
     })
 })
 
@@ -344,7 +344,7 @@ app.get('/users/me/access-token', verifySession, (req, res) => {
 let deleteTaskFromList = (_listId) => {
     Task.deleteMany({
         _listId
-    })
+    }).then()
 }
 
 app.listen(3000, () => {
