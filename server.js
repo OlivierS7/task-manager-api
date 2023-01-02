@@ -293,7 +293,7 @@ app.post('/users', (req, res) => {
     }).then((authTokens) => {
         // Construct & send the response to the user with their auth tokens in the header and the user object in the body
         res.header('x-refresh-token', authTokens.refreshToken)
-            .header('x-access-token', authTokens.accesstoken)
+            .header('x-access-token', authTokens.accessToken)
             .send(newUser)
     }).catch((error) => {
         res.status(400).send(error)
