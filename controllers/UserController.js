@@ -54,6 +54,25 @@ const login = async (req, res) => {
 }
 
 /**
+ * PATCH /users
+ * Purpose: Update a specified user
+ */
+const patch = async (req, res) => {
+    User.findByIdAndUpdate({_id: req.user_id}, {
+        $set: req.body
+    },{ runValidators: true }).then(() => {
+        res.send({'message': 'Updated successfully'})
+    }).catch((err) => {
+        let result = []
+        // Return validation errors due to the UserSchema validation
+        for(const key of Object.keys(err.errors)) {
+            result.push(err.errors[key].message)
+        }
+        res.send({'error': result})
+    })
+}
+
+/**
  * GET /users/me/access-token
  * Purpose: Generates and returns an access token
  */
@@ -68,5 +87,6 @@ const getAccessToken = async (req, res) => {
 module.exports =  {
     post,
     login,
+    patch,
     getAccessToken
 }
