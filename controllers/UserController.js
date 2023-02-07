@@ -1,4 +1,4 @@
-const { List, Task, User } = require('../models')
+const { User } = require('../models')
 
 /**
  * POST /users
@@ -37,6 +37,7 @@ const login = async (req, res) => {
         return user.createSession().then((refreshToken) => {
              // Session created successfully / Now generate an access auth token for the user
              return user.generateAccessAuthToken().then((accessToken) => {
+                
                 // Access token generated successfully / return an object containing the auth tokens
                 return {accessToken, refreshToken}
             })
@@ -54,15 +55,30 @@ const login = async (req, res) => {
 }
 
 /**
+ * POST /users/verify-login
+ * Purpose: Ensure that the password is correct
+ */
+const verifyLogin = async (req, res) => {
+    let email = req.body.email
+    let password = req.body.password
+    User.findByCredentials(email, password).then((user) => {
+        res.status(200).send(user)
+    }).catch((error) => {
+        res.status(400).send(error)
+    })
+}
+
+/**
  * PATCH /users
  * Purpose: Update a specified user
  */
 const patch = async (req, res) => {
-    User.findByIdAndUpdate({_id: req.user_id}, {
+    User.findOneAndUpdate({_id: req.user_id}, {
         $set: req.body
     },{ runValidators: true }).then(() => {
         res.send({'message': 'Updated successfully'})
     }).catch((err) => {
+        console.log(err);
         let result = []
         // Return validation errors due to the UserSchema validation
         for(const key of Object.keys(err.errors)) {
@@ -87,6 +103,7 @@ const getAccessToken = async (req, res) => {
 module.exports =  {
     post,
     login,
+    verifyLogin,
     patch,
     getAccessToken
 }

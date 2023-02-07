@@ -57,7 +57,7 @@ UserSchema.methods.toJSON = function() {
     const userObject = user.toObject()
 
     // return a JSON representation of the user (excludes fields specified below)
-    return lodash.omit(userObject, ['firstName', 'lastName', 'password', 'sessions'])
+    return lodash.omit(userObject, ['password', 'sessions'])
 }
 
 UserSchema.methods.generateAccessAuthToken = function() {
@@ -162,6 +162,17 @@ UserSchema.pre('save', function (next) {
         next()
     }
 })
+
+UserSchema.pre('findOneAndUpdate', function(next) {
+    let costFactor = 10
+    const update = this.getUpdate();
+    bcrypt.genSalt(costFactor, (err, salt) => {
+        bcrypt.hash(update['$set'].password, salt, (err, hash) => {
+            update['$set'].password = hash;
+            next();
+        })
+    })
+  });
 /* End Middleware methods */
 
 
